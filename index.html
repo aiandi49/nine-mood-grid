@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
+    --gutter: 32px;
     --bg: #08060F;
     --bg-elev: #120E22;
     --bg-card: #161029;
@@ -53,7 +54,7 @@
   h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; letter-spacing: -0.01em; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   a { color: inherit; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
 
   /* background ambient glow */
   .ambient {
@@ -74,8 +75,8 @@
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     border-bottom: 1px solid var(--border);
   }
-  nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; max-width: 1180px; margin: 0 auto; }
-  .logo { font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+  nav .inner { display: flex; align-items: center; justify-content: space-between; padding: 18px var(--gutter); max-width: 1180px; margin: 0 auto; gap: 16px; }
+  .logo { font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .logo .dots { display: grid; grid-template-columns: repeat(3, 5px); grid-template-rows: repeat(3, 5px); gap: 2px; }
   .logo .dots i { display: block; width: 5px; height: 5px; border-radius: 1px; background: var(--magenta); }
   .logo .dots i:nth-child(2) { background: var(--amber); }
@@ -83,11 +84,12 @@
   .logo .dots i:nth-child(5) { background: var(--violet); }
   .logo .dots i:nth-child(6) { background: var(--magenta); }
   .logo .dots i:nth-child(8) { background: var(--cyan); }
-  .navlinks { display: flex; align-items: center; gap: 28px; font-size: 14px; color: var(--text-dim); }
+  .nav-right { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+  .navlinks { display: flex; align-items: center; gap: 28px; font-size: 14px; color: var(--text-dim); white-space: nowrap; }
   .navlinks a:hover { color: var(--text); }
   .theme-toggle {
     width: 52px; height: 28px; border-radius: 20px; border: 1px solid var(--border);
-    background: var(--bg-elev); position: relative; cursor: pointer;
+    background: var(--bg-elev); position: relative; cursor: pointer; flex-shrink: 0;
   }
   .theme-toggle .knob {
     position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%;
@@ -95,6 +97,22 @@
     transition: transform 0.3s ease;
   }
   html[data-theme="light"] .theme-toggle .knob { transform: translateX(24px); }
+  .hamburger {
+    display: none; flex-direction: column; justify-content: center; gap: 5px;
+    width: 30px; height: 30px; background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0;
+  }
+  .hamburger span { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 2px; }
+  .mobile-menu {
+    display: none; flex-direction: column; padding: 4px var(--gutter) 18px;
+    border-top: 1px solid var(--border); background: var(--bg);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    padding: 14px 2px; font-size: 15px; color: var(--text-dim); text-decoration: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:active { color: var(--cyan); }
 
   /* HERO */
   .hero { position: relative; z-index: 1; padding: 90px 0 60px; }
@@ -207,12 +225,26 @@
   }
 
   /* CASE STUDIES */
+  .case-scroll-outer { position: relative; }
   .case-scroll {
-    display: flex; gap: 20px; overflow-x: auto; padding-bottom: 18px; margin: 0 -32px; padding-left: 32px; padding-right: 32px;
+    display: flex; gap: 20px; overflow-x: auto;
+    padding: 4px var(--gutter) 22px;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--gutter);
   }
   .case-scroll::-webkit-scrollbar { height: 6px; }
   .case-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .case-fade {
+    position: absolute; top: 0; right: 0; bottom: 22px; width: 56px;
+    background: linear-gradient(to right, transparent, var(--bg) 88%);
+    pointer-events: none;
+  }
+  .swipe-hint {
+    display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--text-dim);
+    margin: -30px 0 22px;
+  }
+  .swipe-hint .arrow { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
+  @keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
   .case-card {
     flex: 0 0 300px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px;
     overflow: hidden; scroll-snap-align: start;
@@ -268,8 +300,11 @@
     .demo-panel { grid-template-columns: 1fr; padding: 26px; }
     .trust-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; }
-    .wrap { padding: 0 20px; }
-    nav .inner { padding: 16px 20px; }
+    :root { --gutter: 20px; }
+  }
+  @media (max-width: 700px) {
+    .navlinks { display: none; }
+    .hamburger { display: flex; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -287,13 +322,24 @@
       <div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       NINE
     </div>
-    <div class="navlinks">
-      <a href="#how">How it works</a>
-      <a href="#demo">Try it</a>
-      <a href="#cases">Case studies</a>
-      <a href="#trust">Permissions</a>
+    <div class="nav-right">
+      <div class="navlinks">
+        <a href="#how">How it works</a>
+        <a href="#demo">Try it</a>
+        <a href="#cases">Case studies</a>
+        <a href="#trust">Permissions</a>
+      </div>
       <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle light and dark theme"><div class="knob"></div></div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#how">How it works</a>
+    <a href="#demo">Try it</a>
+    <a href="#cases">Case studies</a>
+    <a href="#trust">Permissions</a>
   </div>
 </nav>
 
@@ -383,8 +429,10 @@
       <div class="eyebrow">Case Studies</div>
       <h2>Seven photos, seven grids</h2>
       <p>Every mood board on this page came from a single uploaded photo — no additional images, no manual editing.</p>
+      <div class="swipe-hint mono">SWIPE TO SEE ALL SEVEN <span class="arrow">→</span></div>
     </div>
   </div>
+  <div class="case-scroll-outer">
   <div class="case-scroll">
     <div class="case-card">
       <div class="case-imgs">
@@ -471,6 +519,8 @@
       </div>
     </div>
   </div>
+  <div class="case-fade" aria-hidden="true"></div>
+  </div>
 </section>
 
 <section id="trust">
@@ -545,6 +595,20 @@
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
     html.setAttribute('data-theme', 'light');
   }
+
+  // Mobile hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
 
   // Upload preview
   const fileInput = document.getElementById('fileInput');
